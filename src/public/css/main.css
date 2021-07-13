@@ -1,0 +1,102 @@
+@import url('https://fonts.googleapis.com/css2?family=Kameron:wght@700&display=swap');
+.stiker{
+    margin-top: 0;
+    page-break-after: always;
+}
+.qr{
+height: 29.6mm;
+padding-left: 0;
+}
+.descripcion{
+    height: 14.8mm;
+}
+.rma{
+  font-size: 8px;
+  display: inline-block;
+}
+.epigrafe{
+    font-size: 10px;
+}
+.h1violento{
+    font-size: 36px !important;
+    font-family: 'Kameron', serif;
+    
+}
+@font-face {
+  font-family: "Anton-regular";
+  src: url("Anton-Regular.ttf");
+}
+.minimo{
+    font-size: 12px;
+    margin-left: 18px;
+    font-weight:900;
+    font-family: monospace;
+    font-size-adjust: inherit;
+}
+@media screen {
+    .stiker{
+        width: 90mm;
+        border: black 1px solid;
+    }
+    .tamañoopciones{
+        height: 29.6mm;
+        width: 400px;
+        /* margin-left: 20px;
+        margin-top: 200px; */
+    }
+    .tamh{
+        height: 29.6mm;
+    }
+}
+.autocomplete,.autocomplete-sku {
+    position: relative;
+    display: inline-block;
+  }
+  
+  input {
+    border: 1px solid transparent;
+    background-color: #f1f1f1;
+    padding: 10px;
+    font-size: 16px;
+  }
+  
+  input[type=text] {
+    background-color: #f1f1f1;
+    width: 100%;
+  }
+  
+  input[type=submit] {
+    background-color: DodgerBlue;
+    color: #fff;
+    cursor: pointer;
+  }
+  
+  .autocomplete-items, .autocomplete-items-sku {
+    position: absolute;
+    border: 1px solid #d4d4d4;
+    border-bottom: none;
+    border-top: none;
+    z-index: 99;
+    /*position the autocomplete items to be the same width as the container:*/
+    top: 100%;
+    left: 0;
+    right: 0;
+  }
+  
+  .autocomplete-items div,.autocomplete-items-sku div {
+    padding: 10px;
+    cursor: pointer;
+    background-color: #fff; 
+    border-bottom: 1px solid #d4d4d4; 
+  }
+  
+  /*when hovering an item:*/
+  .autocomplete-items div:hover ,.autocomplete-items-sku div:hover{
+    background-color: #e9e9e9; 
+  }
+  
+  /*when navigating through the items using the arrow keys:*/
+  .autocomplete-active,.autocomplete-active-sku {
+    background-color: DodgerBlue !important; 
+    color: #ffffff; 
+  }
