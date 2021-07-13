@@ -1,0 +1,55 @@
+<div class="container">
+    <div class="row">
+        <h1 class="text-center">Carga inventario Elit</h1>
+        <form action="/cargaelist">
+            <div class="form-check form-check-inline">
+                <input class="form-check-input provincias" type="radio" name="provincia" id="mendoza" value="00013"checked>
+                <label class="form-check-label" for="mendoza">
+                    Mendoza
+                </label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input provincias" type="radio" name="provincia" id="buenosAires" value="00031" >
+                <label class="form-check-label" for="buenosAires">
+                    Buenos Aires
+                </label>
+            </div>
+            <input type="text" name="nfactura" value="00013" id="numeroFactura" class="shadow mb-3">
+            <input type="hidden" name="empresa" value="ELIT SA">
+            <div id="checkform" >
+
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <input type="text" name="sku" class="shadow" placeholder="SKU">
+                </div>
+                <div class="col-4">
+                    <input type="number" name="cantidad" class="w-100 shadow" placeholder="Cantidad">
+                </div>
+                <div class="col-4">
+                    <button class="btn w-100 btn-warning shadow" id="agregar">Agregar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="https://momentjs.com/downloads/moment-with-locales.min.js"></script>
+<script>
+    moment.locale('es-mx')
+    console.log(moment().format('DDMMYYYY')); 
+    for (let index = 0; index < 10; index++) {
+        document.getElementById('checkform').innerHTML +=  `<div class="form-check form-check-inline">
+                                                                <input class="form-check-input" type="radio" name="fechacompra" id="flexRadioDefault`+index+`" value="`+moment().subtract(index, 'days').format('DDMMYY')+`">
+                                                                <label class="form-check-label" for="flexRadioDefault`+index+`">
+                                                                    `+moment().subtract(index, 'days').format('DD/MM/YY') +`
+                                                                </label>
+                                                            </div>`
+    
+    }
+    let provincias = Array.prototype.slice.apply(document.querySelectorAll('.provincias'))
+    provincias.map((e)=>{
+        e.addEventListener('click',(e)=>{
+            document.getElementById('numeroFactura').value = e.path[0].defaultValue
+        })
+    })
+</script>

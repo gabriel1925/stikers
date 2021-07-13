@@ -1,0 +1,28 @@
+.rotate90{
+    display: block;
+    transform: rotate(90deg) translateY(109%) translateX(34%);
+    
+}
+.tam{
+    width: 10cm;
+    height: 3cm;
+}
+.descripcion { 
+    width: 100%;
+    height: 49%;
+}
+.block{
+    background-color: aquamarine;
+    width: 10cm;
+    height: 10cm;
+    left: 0;
+    top: 0;
+    display: block;
+    page-break-after: always;
+    orientation: inherit;
+}
+.divskuqr{
+    width: 49%;
+    height: 49%;
+    display: inline-block;
+}
