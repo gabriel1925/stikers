@@ -21,7 +21,15 @@
             </div>
             <div class="row">
                 <div class="col-4">
-                    <input type="text" name="sku" class="shadow" placeholder="SKU">
+                    <input type="search" name="sku" list="datalistOptions" class="shadow w-100" placeholder="SKU">
+                    <div id="autocomplete" class=" position-absolute  col-3" >
+                        <div class="border px-1 zindexalto">
+                            <div class="row">
+                                <span class="nombre col-8">INTEL I7-9700</span>
+                                <span class="sku col-4">SKU: 1001</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-4">
                     <input type="number" name="cantidad" class="w-100 shadow" placeholder="Cantidad">
@@ -30,11 +38,27 @@
                     <button class="btn w-100 btn-warning shadow" id="agregar">Agregar</button>
                 </div>
             </div>
-            <div class="row h-100"></div>
+            <div class="row h-100 mx-1 my-4 w-100">
+                    <div class="template-add">
+                        <div class="row">
+                            <div class="col-5 bg-primary py-1 h-100 rounded shadow ">
+                                <span>this name</span> <br>
+                                <span>this.sku</span>
+                            </div>
+                            <div class="col-5">
+                                <input type="number" class="w-100 h-100 shadow" placeholder="Cantidad">
+                            </div>
+                            <div class="col-2">
+                                <button class="btn btn-danger h-100">Borrar</button>
+                            </div>
+                        </div>
+                    </div>
+            </div>
         </form>
     </div>
 </div>
 <script src="https://momentjs.com/downloads/moment-with-locales.min.js"></script>
+
 <script>
     moment.locale('es-mx')
     console.log(moment().format('DDMMYYYY')); 
@@ -54,3 +78,25 @@
         })
     })
 </script>
+{{!-- busco los productos  --}}
+<script>
+    document.addEventListener("DOMContentLoaded", function(event) {
+    let $templateautocomplete = document.getElementById('autocomplete')
+    console.log($templateautocomplete)
+    $templateautocomplete.querySelector('.sku').innerHTML += ""
+  });
+</script>
+{{!-- Agrego los productos  --}}
+
+<style>
+    .zindexalto{
+        z-index: 2000 !important;
+        background-color: white;
+        width: 100% !important;
+    }
+    .zindexalto .row:hover{
+        z-index: 2000 !important;
+        background-color: aqua;
+        width: 100% !important;
+    }
+</style>
