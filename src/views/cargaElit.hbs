@@ -22,8 +22,8 @@
             </div>
             <div class="row">
                 <div class="col-4">
-                    <input type="search" name="sku" list="datalistOptions" class="shadow w-100" id="search" autocomplete="off"
-                        placeholder="SKU">
+                    <input type="search" name="sku" list="datalistOptions" class="shadow w-100" id="search"
+                        autocomplete="off" placeholder="SKU">
                     <div id="autocomplete" class=" position-absolute  col-3">
                         <div class="border px-1 zindexalto">
                             <div class="row">
@@ -45,7 +45,7 @@
                     <div class="row">
                         <div class="col-5 bg-primary py-1 h-100 rounded shadow ">
                             <span>this name</span> <br>
-                            <span>this.sku</span>
+                            <span>sku</span>
                         </div>
                         <div class="col-5">
                             <input type="number" class="w-100 h-100 shadow" placeholder="Cantidad">
@@ -86,8 +86,8 @@
         let $templateautocomplete = document.querySelector('#autocomplete').content
         let $search = document.getElementById('search')
         let $fragmento = document.createDocumentFragment()
-        let $clone = document.importNode($templateautocomplete,true)
-        console.log($clone)
+        //let $clone = document.importNode($templateautocomplete, true)
+        //console.log($clone)
 
         //console.log($templateautocomplete)
         //$templateautocomplete.querySelector('.sku').innerHTML = ""
@@ -98,11 +98,10 @@
         inputs.map((e, index) => {
             e.addEventListener('keydown', (ev) => {
                 if (ev.key === 'Enter') {
-                    if (index === 16) {
+                    if (index === inputs.length - 1) {
                         inputs[0].focus()
                     } else {
                         ev.preventDefault()
-                        console.log(index)
                         inputs[index + 1].focus()
                         if (index === 2) {
                             inputs[4].focus()
@@ -112,6 +111,77 @@
             })
 
         })
+        async function buscarProducto(sku,busquedaTipo) {
+            let skus
+
+            let myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+
+            let urlencoded = new URLSearchParams();
+            urlencoded.append("sku", sku);
+
+            let requestOptions = {
+                method: 'POST',
+                body: urlencoded,
+                redirect: 'follow'
+            };
+            return await fetch(busquedaTipo, requestOptions)
+                .then(response => response.json())
+                .then(result => {
+                    if (result.length === 0 || result.length === null) {
+                        return null
+                    } else {
+                        skus = result
+                        if (result.length === 1) {
+                            //skus = null
+                            //sku = result[0].sku
+                            //nombre = result[0].nombre
+                            return result[0]
+                        } else {
+                            return result
+                        }
+                    }
+                })
+            // .catch(error => console.log('error', error));
+        }
+
+        async function busqueda(sku) {
+            if (Number.isInteger(parseInt(sku))) {
+                //entro como numero
+                console.log(await buscarProducto(sku,'/busquedasku'))
+            } else {
+                //entro como nombre 
+                console.log(await buscarProducto(sku,'/busquedasnombre'))
+            }
+        }
+        let sku
+        //empiezo la busqueda del sku 
+        $search.addEventListener('keydown', async function (e) {
+            //saco algunas teclas de la ecuacion 
+            if (e.key != 'Control' && e.key != 'Alt' && e.key != 'Backspace' && e.key != 'Meta') {
+                //meto todo en un tiempo para tomar correctamente los valores 
+                setTimeout(async function () {
+                    sku = $search.value
+                    if (sku.length >= 3) {
+                        await busqueda(sku)
+                    }
+                }, 200)
+            }
+        })
+
+
+
+
+
+
+
+
+
+
+
+
+
     });
 
 </script>
