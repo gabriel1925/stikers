@@ -155,9 +155,9 @@
         //empiezo la busqueda del sku 
         $search.addEventListener('keydown', async function (e) {
             //saco algunas teclas de la ecuacion 
-            if (e.key != 'Control' && e.key != 'Alt' && e.key != 'Meta') {
-                //meto todo en un tiempo para tomar correctamente los valores 
-                setTimeout(async function () {
+            //meto todo en un tiempo para tomar correctamente los valores 
+            setTimeout(async function () {
+                if (e.key != 'Control' && e.key != 'Alt' && e.key != 'Meta' && e.key != 'ArrowUp' && e.key != 'ArrowDown') {
                     sku = $search.value
                     //si e menor que 3 limpiamos el elemento
                     if (sku.length < 3) {
@@ -191,10 +191,10 @@
                         document.querySelector("#autocompletadocolocar div").appendChild($fragmento);
 
                     }
-                    focuselemento(e)
 
-                }, 0)
-            }
+                }
+                focuselemento(e)
+            }, 0)
         }
             ////console.log(e.key)
         )
@@ -202,26 +202,37 @@
 
         function focuselemento(e) {
             let arrayDeBusqueda = Array.prototype.slice.apply(document.querySelectorAll("#autocompletadocolocar div div"))
-             let arrayDeBusqueda = Array.prototype.slice.apply(document.querySelectorAll("#autocompletadocolocar div div"))
             console.log(arrayDeBusqueda.length)
+            console.log(indexBajar)
             //no hago nada si el leng es 0
-            if(arrayDeBusqueda.length ==1){
-                 arrayDeBusqueda = null
+            if (arrayDeBusqueda.length == 1) {
+                arrayDeBusqueda = null
             }
-            if(e.key == 'ArrowDown' && arrayDeBusqueda!= null){
-                    if(indexBajar == 1){
-                        arrayDeBusqueda[].classList.add('focusBusqueda')
-                    }else{
+            if (arrayDeBusqueda.length == 1) {
+                arrayDeBusqueda[0].classList.remove('focusBusqueda')
+            } else {
+                arrayDeBusqueda.map((el) => {
+                    el.classList.remove('focusBusqueda')
+                })
+            }
 
-                        (arrayDeBusqueda[arrayDeBusqueda.length-1].classList.contains('focusBusqueda'))?arrayDeBusqueda[arrayDeBusqueda.length-1].classList.remove('focusBusqueda'):console.log('chu')
-                    }
-                    {{!-- arrayDeBusqueda[(arrayDeBusqueda.length !=1)?indexBajar:(indexBajar)].classList.remove('focusBusqueda')
-                    arrayDeBusqueda[(arrayDeBusqueda.length !=1)?indexBajar:(indexBajar)].classList.add('focusBusqueda')
-                    console.log(indexBajar,arrayDeBusqueda) --}}
-                    
-                    indexBajar++
-            }else if(e.key == 'ArrowUp' && arrayDeBusqueda!= null){
-                
+            if (e.key == 'ArrowDown' && arrayDeBusqueda != null) {
+                if (arrayDeBusqueda.length == 1) {
+                    arrayDeBusqueda[0].classList.add('focusBusqueda')
+                } else {
+                    arrayDeBusqueda[indexBajar].classList.add('focusBusqueda')
+                }
+                indexBajar++
+                if (indexBajar == arrayDeBusqueda.length) {
+                    indexBajar = 0
+                }
+
+            } else if (e.key == 'ArrowUp' && arrayDeBusqueda != null) {
+                if (indexBajar == 0) {
+                    indexBajar = arrayDeBusqueda.length
+                }
+                indexBajar--
+                arrayDeBusqueda[indexBajar].classList.add('focusBusqueda')
             }
         }
 
