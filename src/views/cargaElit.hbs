@@ -24,14 +24,17 @@
                 <div class="col-4">
                     <input type="search" name="sku" list="datalistOptions" class="shadow w-100" id="search"
                         autocomplete="off" placeholder="SKU">
-                    <div id="autocomplete" class=" position-absolute  col-3">
-                        <div class="border px-1 zindexalto">
-                            <div class="row">
-                                <span class="nombre col-8">INTEL I7-9700</span>
-                                <span class="sku col-4">SKU: 1001</span>
-                            </div>
+                    <div class=" position-absolute  col-3">
+                        <div class="border px-1 zindexalto" id="autocompletadocolocar">
+                            <div></div>
                         </div>
                     </div>
+                    <template class="row" id="autocomplete">
+                        <div class="item">
+                            <span class="nombre col-8"></span>
+                            <span class="sku col-4"></span>
+                        </div>
+                    </template>
                 </div>
                 <div class="col-4">
                     <input type="number" name="cantidad" class="w-100 shadow" placeholder="Cantidad">
@@ -63,7 +66,7 @@
 
 <script>
     moment.locale('es-mx')
-    //console.log(moment().format('DDMMYYYY')); 
+    //console.log(moment().format('DDMMYYYY'))
     for (let index = 0; index < 10; index++) {
         document.getElementById('checkform').innerHTML += `<div class="form-check form-check-inline">
                                                                 <input class="form-check-input" type="radio" name="fechacompra" id="flexRadioDefault`+ index + `" value="` + moment().subtract(index, 'days').format('DDMMYY') + `">
@@ -83,17 +86,11 @@
 {{!-- busco los productos --}}
 <script>
     document.addEventListener("DOMContentLoaded", async function (event) {
-        let $templateautocomplete = document.querySelector('#autocomplete').content
+        let $templateAutocomplete = document.getElementById("autocomplete").content;
         let $search = document.getElementById('search')
         let $fragmento = document.createDocumentFragment()
-        //let $clone = document.importNode($templateautocomplete, true)
-        //console.log($clone)
-
-        //console.log($templateautocomplete)
-        //$templateautocomplete.querySelector('.sku').innerHTML = ""
-        //cancelamos enter
-
         //cambiar de focus al tocar next
+        ////console.log($templateAutocomplete)
         let inputs = Array.prototype.slice.apply(document.querySelectorAll('form input'))
         inputs.map((e, index) => {
             e.addEventListener('keydown', (ev) => {
@@ -111,7 +108,7 @@
             })
 
         })
-        async function buscarProducto(sku,busquedaTipo) {
+        async function buscarProducto(sku, busquedaTipo) {
             let skus
 
             let myHeaders = new Headers();
@@ -120,7 +117,6 @@
 
             let urlencoded = new URLSearchParams();
             urlencoded.append("sku", sku);
-
             let requestOptions = {
                 method: 'POST',
                 body: urlencoded,
@@ -143,32 +139,91 @@
                         }
                     }
                 })
-            // .catch(error => console.log('error', error));
+            // .catch(error => //console.log('error', error));
         }
 
         async function busqueda(sku) {
             if (Number.isInteger(parseInt(sku))) {
                 //entro como numero
-                console.log(await buscarProducto(sku,'/busquedasku'))
+                return await buscarProducto(sku, '/busquedasku')
             } else {
                 //entro como nombre 
-                console.log(await buscarProducto(sku,'/busquedasnombre'))
+                return await buscarProducto(sku, '/busquedasnombre')
             }
         }
         let sku
         //empiezo la busqueda del sku 
         $search.addEventListener('keydown', async function (e) {
             //saco algunas teclas de la ecuacion 
-            if (e.key != 'Control' && e.key != 'Alt' && e.key != 'Backspace' && e.key != 'Meta') {
+            if (e.key != 'Control' && e.key != 'Alt' && e.key != 'Meta') {
                 //meto todo en un tiempo para tomar correctamente los valores 
                 setTimeout(async function () {
                     sku = $search.value
-                    if (sku.length >= 3) {
-                        await busqueda(sku)
+                    //si e menor que 3 limpiamos el elemento
+                    if (sku.length < 3) {
+                        document.querySelector("#autocompletadocolocar div").innerHTML = ''
                     }
-                }, 200)
+                    //si es mayor o igual a tres empezamos la busqueda, lo primero que hacemos es limpiar el elemento
+                    if (sku.length >= 3) {
+                        document.querySelector("#autocompletadocolocar div").innerHTML = ''
+                        let busquedas = await busqueda(sku)
+                        //console.log(busquedas)
+                        if (busquedas == null) {
+                            $templateAutocomplete.querySelector('.sku').textContent = 'El elemento no existe'
+                            $templateAutocomplete.querySelector('.nombre').textContent = ''
+                            let $clone = document.importNode($templateAutocomplete, true);
+                            $fragmento.appendChild($clone)
+                        } else if (busquedas.length == undefined) {
+                            //console.log(busquedas)
+                            $templateAutocomplete.querySelector('.sku').textContent = busquedas.sku
+                            $templateAutocomplete.querySelector('.nombre').textContent = busquedas.nombre
+                            let $clone = document.importNode($templateAutocomplete, true);
+                            $fragmento.appendChild($clone)
+                        } else {
+
+                            busquedas.map((e) => {
+                                $templateAutocomplete.querySelector('.sku').textContent = e.sku
+                                $templateAutocomplete.querySelector('.nombre').textContent = e.nombre
+                                let $clone = document.importNode($templateAutocomplete, true);
+                                $fragmento.appendChild($clone)
+                            })
+                        }
+                        document.querySelector("#autocompletadocolocar div").appendChild($fragmento);
+
+                    }
+                    focuselemento(e)
+
+                }, 0)
             }
-        })
+        }
+            ////console.log(e.key)
+        )
+        let indexBajar = 0
+
+        function focuselemento(e) {
+            let arrayDeBusqueda = Array.prototype.slice.apply(document.querySelectorAll("#autocompletadocolocar div div"))
+             let arrayDeBusqueda = Array.prototype.slice.apply(document.querySelectorAll("#autocompletadocolocar div div"))
+            console.log(arrayDeBusqueda.length)
+            //no hago nada si el leng es 0
+            if(arrayDeBusqueda.length ==1){
+                 arrayDeBusqueda = null
+            }
+            if(e.key == 'ArrowDown' && arrayDeBusqueda!= null){
+                    if(indexBajar == 1){
+                        arrayDeBusqueda[].classList.add('focusBusqueda')
+                    }else{
+
+                        (arrayDeBusqueda[arrayDeBusqueda.length-1].classList.contains('focusBusqueda'))?arrayDeBusqueda[arrayDeBusqueda.length-1].classList.remove('focusBusqueda'):console.log('chu')
+                    }
+                    {{!-- arrayDeBusqueda[(arrayDeBusqueda.length !=1)?indexBajar:(indexBajar)].classList.remove('focusBusqueda')
+                    arrayDeBusqueda[(arrayDeBusqueda.length !=1)?indexBajar:(indexBajar)].classList.add('focusBusqueda')
+                    console.log(indexBajar,arrayDeBusqueda) --}}
+                    
+                    indexBajar++
+            }else if(e.key == 'ArrowUp' && arrayDeBusqueda!= null){
+                
+            }
+        }
 
 
 
@@ -200,5 +255,31 @@
         width: 100% !important;
         margin: 0 !important;
         padding: 0 !important;
+    }
+
+    .item {
+        border: 1px solid black;
+    }
+
+    .item:hover {
+        background-color: red;
+    }
+
+    #autocompletadocolocar {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .sku {
+        width: 25% !important;
+    }
+
+    .nombre {
+        width: 75% !important;
+
+    }
+
+    .focusBusqueda {
+        background-color: aqua;
     }
 </style>
