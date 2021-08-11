@@ -198,6 +198,11 @@
         }
             ////console.log(e.key)
         )
+        inputs.map((e))=>{
+            e.addEventListener('focusout',()=>{
+             document.querySelector("#autocompletadocolocar div").innerHTML = ''
+        })
+        }
         let indexBajar = 0
 
         function focuselemento(e) {

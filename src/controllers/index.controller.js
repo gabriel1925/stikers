@@ -20,11 +20,6 @@ index.cargarproductos = (req,res)=>{
 }
 
 index.imprimirstikers = async (req,res)=>{
-    console.log(req.params.remito)
-    console.log(req.params.remito)
-    console.log(req.params.remito)
-    console.log(req.params.remito)
-    console.log(req.params.remito)
 
 
 
@@ -34,14 +29,6 @@ index.imprimirstikers = async (req,res)=>{
     }else{
         pedido= req.params.remito
     }
-    console.log("////")
-    console.log("////")
-    console.log("////")
-    console.log("////")
-
-    console.log(pedido)
-    console.log("////")
-    console.log("////")
     let buscaPedido = await Remitos.findOne({"nremito":pedido})
     console.log(buscaPedido)
     let cosa = buscaPedido
@@ -49,5 +36,8 @@ index.imprimirstikers = async (req,res)=>{
     res.render("printetiquetas", {"id":cosa._id,"nremito":cosa.nremito, "tamPedido": cosa.pedido.length  })
 
 
+}
+index.imprimirSinremitos = async(req,res)=>{
+    res.render('sinremito')
 }
 module.exports = index
