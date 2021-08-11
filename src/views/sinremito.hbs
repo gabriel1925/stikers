@@ -1,46 +1,44 @@
 <style>
     .codebar {
-  height:14.9mm;
-  margin-top:0;
-}
+        height: 14.9mm;
+        margin-top: 0;
+    }
 </style>
 <div id="app9p">
-<input type="text" id="id" class="d-print-none" placeholder="SKU">
-<input type="hidden" id="tamPedido" class="d-print-none">
-<button class="btn btn-block btn-warning d-print-none w-100 mb-4" >as</button>
+    <input type="text" id="id" class="d-print-none" placeholder="SKU">
+    <input type="hidden" id="tamPedido" class="d-print-none">
+    <button class="btn btn-block btn-success d-print-none w-100 mb-4" id="BuscarSku">Buscar</button>
     <div v-for="(items,index) in llamada.pedido">
         <div class="d-block tamh">
-            <div class=" d-print-block d-print-grid stiker d-inline-block" :id="'qrprint'+(index+1)">
+            <div class=" d-print-block d-print-grid stiker d-inline-block" id="'qrprint'+(index+1)">
                 <div class="row">
                     <div class="col-8">
                         <div class="row">
-                            <div class="col-12 bg-info descripcion ps-2" >
+                            <div class="col-12 bg-info descripcion ps-2">
                                 <div class="minimo d-block">
-                                      <b>${items.nombre} </b>  
+                                    <b id="nombretraido"></b>
                                 </div>
                                 <div class="rma ps-3">
-                                     Conservar para gestionar RMA
+                                    Conservar para gestionar RMA
                                 </div>
                             </div>
                             <div class="col-12 bg-info rma">
                             </div>
                             <div class="col-12 bg-warning descripcion ">
                                 <b>
-                                    <span class="ms-4 mt-0 h1violento ">
-                                        ${items.sku}
+                                    <span class="ms-4 mt-0 h1violento " id="skuTraido">
+                                        sku
                                     </span>
                                 </b>
                             </div>
                         </div>
                     </div>
-                    <div class="col-4 br-danger qr py-auto ps-2" >
-                        {{!-- 
-                        <svg id="barcode" class="codebar"></svg>
-                        --}}
+                    <div class="col-4 br-danger qr py-auto ps-2">
+                        
                         <div class="pt-2">
-                            <div :id="'qr'+index"></div>
-                            <span class="epigrafe">
-                                <b>${llamada.nremito}</b>
+                            <div id="qr"></div>
+                            <span class="epigrafe" >
+                                <b id="fechaRemitoTraido"></b>
                             </span>
                         </div>
                     </div>
@@ -48,11 +46,9 @@
             </div>
             <div class="d-print-none grid d-inline-block ms-5">
                 <div class="row ">
-                    <button class="btn bt-block btn-primary py-0 " @click="imprimir(index,items.cantidad)">
-                    imprimir
-                </button> 
-                <h5>La cantidad es:</h5>
-                <h2><p>${items.cantidad}</p></h2>
+                    <button class="btn bt-block btn-primary py-0 " id="imprimir">
+                        imprimir
+                    </button>
                 </div>
             </div>
         </div>
@@ -60,11 +56,57 @@
         </div>
     </div>
 </div>
-  <script src="/public/barcode.js"></script>
-    <script src="/public/qrcode.js"></script>
+<script src="/public/barcode.js"></script>
+<script src="/public/qrcode.js"></script>
+<script src="/public/momentjs.js"></script>
 <script>
+    moment.locale('es-mx')
+    async function cosa() {
+        let sku = document.getElementById('id').value
+        sku = parseInt(sku)
+        let skutraido, nombre
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
 
 
+        let urlencoded = new URLSearchParams();
+        urlencoded.append("sku", sku);
 
+        let requestOptions = {
+            method: 'POST',
+            body: urlencoded,
+            redirect: 'follow'
+        }
+        fetch("/busquedasku", requestOptions)
+            .then(response => response.json())
+            .then(result => {
+                console.log(result)
+                skutraido = result[0].sku
+                nombre = result[0].nombre
+                console.log(result[0])
+                document.getElementById("nombretraido").innerHTML = nombre
+                document.getElementById("skuTraido").innerHTML = sku
+                document.getElementById("qr").innerHTML = ""
+                new QRCode(document.getElementById("qr"), {
+                            text:moment().format('DDMMYY'),
+                            width: 80,
+                            height: 80,
+                            colorDark : "#000000",
+                            colorLight : "#ffffff",
+                            correctLevel : QRCode.CorrectLevel.H
+                        });
+                        document.getElementById('fechaRemitoTraido').innerHTML = moment().format('DD/MM/YY')
+
+            }).catch(()=>{
+                console.log("error")
+            })
+
+    }
+        document.getElementById('BuscarSku').addEventListener('click', async function (e){
+            await cosa()
+            console.log('jeje')
+        })
+        document.getElementById('imprimir').addEventListener('click',(e)=>{
+            window.print()
+        })
 </script>
-{{!-- <script src="/public/printstiker.js"></script> --}}

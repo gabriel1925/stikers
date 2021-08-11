@@ -59,4 +59,3 @@ const vue = new Vue({
     },
     delimiters: ['${', '}']
 })
-
